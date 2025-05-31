@@ -38,10 +38,6 @@ python --version
 ```
 
 2. Клонируйте репозиторий и перейдите в него:
-```bash
-git clone git@github.com:ваш-аккаунт/foodgram-project-react.git
-cd foodgram-project-react
-```
 
 3. Создайте и активируйте виртуальное окружение:
 ```bash
@@ -83,15 +79,9 @@ python manage.py runserver
 1. Установите Docker и Docker Compose согласно официальной документации
 
 2. Клонируйте репозиторий и перейдите в него:
-```bash
-git clone git@github.com:ваш-аккаунт/foodgram-project-react.git
-cd foodgram-project-react
-```
 
 3. Создайте файл .env в директории infra/:
-```bash
-touch infra/.env
-```
+
 Добавьте в него переменные окружения:
 ```
 DB_ENGINE=django.db.backends.postgresql
