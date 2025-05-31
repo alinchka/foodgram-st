@@ -117,7 +117,5 @@ docker-compose exec backend python manage.py createsuperuser
 
 Введите данные для создания суперпользователя
 
-## API документация
 
-[API документация](https://api.foodgram.com/docs/)
 
