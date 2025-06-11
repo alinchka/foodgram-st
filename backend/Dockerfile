@@ -8,6 +8,8 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+ENV PYTHONPATH=/app
+
 RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "foodgram.wsgi:application", "--bind", "0:8000"] 
+CMD ["gunicorn", "--bind", "0:8000", "foodgram.wsgi:application"] 
