@@ -1,6 +1,14 @@
+from django.core.files.base import ContentFile
+
 from rest_framework import serializers
 import base64
-from django.core.files.base import ContentFile
+
+'''По требованиям яндекс практикума это поле должно быть.
+Сериализаторы
+При публикации рецепта фронтенд кодирует картинку в строку base64; 
+на бэкенде её необходимо декодировать и сохранить как файл. 
+Для этого будет удобно создать кастомный тип поля для картинки, 
+переопределив метод сериализатора to_internal_value.'''
 
 
 class Base64ImageField(serializers.ImageField):

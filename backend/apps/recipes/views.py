@@ -1,6 +1,7 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -8,27 +9,29 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from apps.users.serializers import RecipeShortSerializer
-
 from .models import Recipe, Ingredient, Favorite, ShoppingCart
-from .serializers import RecipeSerializer, IngredientSerializer
+from .serializers import RecipeReadSerializer, RecipeWriteSerializer, IngredientSerializer
 from .pagination import RecipePagination
 from .filters import RecipeFilter, IngredientFilter
 from .permissions import IsAuthorOrReadOnly
 
 
 def recipe_redirect(request, recipe_id):
-   # Редирект с короткой ссылки на страницу рецепта
     recipe = get_object_or_404(Recipe, id=recipe_id)
     return redirect(f'/recipes/{recipe_id}/')
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
-    pagination_class = RecipePagination
     permission_classes = (IsAuthorOrReadOnly,)
+    pagination_class = RecipePagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'update', 'partial_update'):
+            return RecipeWriteSerializer
+        return RecipeReadSerializer
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -147,8 +150,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    
-
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
@@ -156,11 +157,4 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
-    filterset_class = IngredientFilter
-
-    def get_queryset(self):
-        queryset = Ingredient.objects.all()
-        name = self.request.query_params.get('name')
-        if name:
-            queryset = queryset.filter(name__istartswith=name)
-        return queryset 
+    filterset_class = IngredientFilter 

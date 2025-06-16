@@ -1,13 +1,16 @@
+from django.shortcuts import get_object_or_404
+
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
+
 from apps.users.models import User, Subscription
 from apps.users.serializers import UserSerializer, SubscriptionSerializer, AvatarSerializer
 from apps.recipes.pagination import RecipePagination
+
 
 class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()

@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from djoser.serializers import UserSerializer as DjoserUserSerializer
 from apps.users.models import User
-from apps.recipes.fields import Base64ImageField
 from apps.recipes.models import Recipe
+from apps.recipes.fields import Base64ImageField
 
 
 class AvatarSerializer(serializers.ModelSerializer):
@@ -27,9 +27,10 @@ class UserSerializer(DjoserUserSerializer):
             return False
         return user.follower.filter(author=obj).exists()
 
+
 class SubscriptionSerializer(UserSerializer):
     recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(source='recipes.count')
 
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('recipes', 'recipes_count')
@@ -40,8 +41,6 @@ class SubscriptionSerializer(UserSerializer):
         ]
         return RecipeShortSerializer(recipes, many=True).data
 
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
 
 class RecipeShortSerializer(serializers.ModelSerializer):
     class Meta:
